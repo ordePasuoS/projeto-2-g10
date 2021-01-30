@@ -13,7 +13,6 @@ class Agent():
         self.res = self.c.connect()
         random.seed()  # To become true random, a different seed is used! (clock time)
         self.maxCoord = ast.literal_eval(self.c.execute("info", "maxcoord"))
-        self.rewardRecieved = 0
         self.qLearningTable = {}
 
     def getConnection(self):
@@ -30,6 +29,13 @@ class Agent():
 
     def get_q_table(self):
         return self.qLearningTable
+
+    def getObstacles(self):
+        msg = self.c.execute("info","obstacles")
+        obst =ast.literal_eval(msg)
+        # test
+        #print('Received map of obstacles:', obst)
+        return obst
     
     def markArrow(self, direction, x, y):
         if direction == 0:
@@ -75,14 +81,15 @@ class Agent():
 
     def initializeTable(self):
         lista_aux = [(0,0),(0,1),(0,1),(0,2),(0,3),(0,4),(1,0),(1,4),(2,0),(2,4),(3,0),(3,4),(4,4),
-        (4,0),(5,0),(5,4),(6,0),(6,4),(7,0),(7,1),(7,2),(7,3),(7,4)]
+        (4,0),(5,0),(5,4),(6,0),(6,4),(7,0),(7,1),(7,2),(7,3)]
         for x in range(self.maxCoord[0]):
             for y in range(self.maxCoord[1]):
                 if (x,y) not in lista_aux:
                     self.qLearningTable[(x,y)] = [0,0,0,0]
+        self.qLearningTable[self.getGoalPosition()] = [100,100,100,100]
         
     def addServerQtableArrows(self):
-        lista_aux = [(2,1),(5,3)]
+        lista_aux = [self.getGoalPosition(),self.getSelfPosition()]
         for x, y in self.qLearningTable:
             if (x,y) not in lista_aux:
                 aux = self.qLearningTable[(x,y)].index(max(self.qLearningTable[(x,y)]))
@@ -97,6 +104,7 @@ def main():
         estados = ["north", "east", "west", "south"]
         aux = 0
         goalPosition = agent.getGoalPosition()
+        obstacles = agent.getObstacles()
         path = []
         rewards = agent.getRewards()
         agent.initializeTable()
