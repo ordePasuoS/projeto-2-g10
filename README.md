@@ -46,3 +46,12 @@ A interface gráfica do servidor bloqueia enquanto espera pela conexão do clien
 ## Contribuidores:
  - Gil Silva
  - José Cascalho
+
+## Executar projeto:
+1) executar main.py
+2) executar cliente_project.py
+
+## Projeto realizado por:
+- Salif Faustino
+- Beatriz Silva
+- Pedro Sousa
